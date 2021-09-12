@@ -1,4 +1,4 @@
-from tkinter import *
+﻿from tkinter import *
 import tkinter.ttk
 import random
 window=Tk()
