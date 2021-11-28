@@ -10,8 +10,10 @@ import tkinter.messagebox
 class editor:
     def __init__(self,x_pos,y_pos, tkwindow):
         self.window=tkwindow
+        self.button_back_color = "#D3E0F3"
+        self.button_fg_color = "#395260"
         #显示器
-        self.rander_target=Canvas(self.window,width=200+self.window.winfo_width(),height=200+self.window.winfo_height(),background="darkslategrey")
+        self.rander_target=Canvas(self.window,width=200+self.window.winfo_width(),height=200+self.window.winfo_height(),background="#D1D9E0")
         self.rander_target.grid(row=1,column=0,rowspan=100,columnspan=100);
         self.rander_target.bind("<Button-1>",self.press_down)
         self.rander_target.bind("<Double-Button-1>",self.double_press_down)
@@ -20,7 +22,7 @@ class editor:
         self.rander_target.bind("<ButtonRelease-1>",self.press_up)
 
         #tensor按钮
-        self.btn_tensor=Button(self.window,activeforeground="black",text="加入点",font=("Arial Bold",16),bg="blue",fg="black")
+        self.btn_tensor=Button(self.window,activeforeground="black",text="加入点",font=("Microsoft YaHei UI",16),bg=self.button_back_color,fg=self.button_fg_color)
         self.btn_tensor.grid(row=0,column=0)
         self.btn_tensor.bind("<Button-1>",self.add_tensor)
 
@@ -30,7 +32,7 @@ class editor:
         self.layer_combobox.grid(row=0,column=1)
         
         #layer按钮
-        self.btn_layer=Button(self.window,activeforeground="black",text="加入边",font=("Arial Bold",16),bg="blue",fg="black")
+        self.btn_layer=Button(self.window,activeforeground="black",text="加入边",font=("Microsoft YaHei UI",16),bg=self.button_back_color,fg=self.button_fg_color)
         self.btn_layer.grid(row=0,column=2)
         self.btn_layer.bind("<Button-1>",self.add_layer)
         
@@ -39,15 +41,15 @@ class editor:
         self.caution_front.grid(row=0,column=3)
         self.question_front=Entry(self.window)
         self.question_front.grid(row=0,column=4)
-        self.question_front.insert(0,"请用逗号隔开")
+        self.question_front.insert(0,"请用空格隔开")
         self.caution_end=Label(self.window,text="输出点")
         self.caution_end.grid(row=0,column=5)
         self.question_end=Entry(self.window)
         self.question_end.grid(row=0,column=6)
-        self.question_end.insert(0,"请用逗号隔开")
+        self.question_end.insert(0,"请用空格隔开")
         
         #保存按钮
-        self.save_button=Button(self.window,activeforeground="black",text="保存",font=("Arial Bold",16),bg="blue",fg="black")
+        self.save_button=Button(self.window,activeforeground="black",text="保存",font=("Microsoft YaHei UI",16),bg=self.button_back_color,fg=self.button_fg_color)
         self.save_button.grid(row=0,column=7)
         self.save_button.bind("<ButtonRelease-1>",self.save_structure)
         
@@ -67,14 +69,7 @@ class editor:
         #拖动时暂时坐标
         self.register_x=0
         self.register_y=0
-        
-        #输入窗口
-        self.question_window=0
-        self.caution_end=0
-        self.caution_front=0
-        self.question_end=0
-        self.question_window=0
-        self.button_for_quit=0
+    
     
     def add_tensor(self,event):
         if self.state==-1:
@@ -93,7 +88,6 @@ class editor:
         self.window.update()
         self.layer_num+=1
         self.state=-1
-        print("fuck2")
         self.switch_layer()
     def switch_layer(self):
         if self.layer_combobox.current()==0:
@@ -121,14 +115,12 @@ class editor:
         self.state=0
         self.now_pressed=0
         for i in self.vector_tensor:
-            #print("fuck")
             if i.state==0:
                 continue
             if i.in_my_area(event.x,event.y)==1:
                 self.state=1
                 self.now_pressed=i.num
         for i in self.vector_layer:
-            print("fuck111")
             if i.state==0:
                 continue
             if i.in_my_area(event.x,event.y)==1:
@@ -145,7 +137,6 @@ class editor:
         self.state=0
         self.now_pressed=0
         for i in self.vector_layer:
-            print("fuck111")
             if i.state==0:
                 continue
             if i.in_my_area(event.x,event.y)==1:
@@ -153,7 +144,6 @@ class editor:
                 self.now_pressed=i.num
         print(self.state,self.now_pressed)#现在的状态和已选中的点的编号
         if self.state==2:
-            print("fuck")
             self.state=-1
             self.vector_layer[self.now_pressed-1].qw.rebutton()
             
@@ -186,14 +176,12 @@ class editor:
         self.state=0
         self.now_pressed=0
         for i in self.vector_tensor:
-            #print("fuck")
             if i.state==0:
                 continue
             if i.in_my_area(event.x,event.y)==1:
                 self.state=1
                 self.now_pressed=i.num
         for i in self.vector_layer:
-            print("fuck111")
             if i.state==0:
                 continue
             if i.in_my_area(event.x,event.y)==1:
@@ -219,8 +207,56 @@ class editor:
             self.vector_layer[self.now_pressed-1].delete()
     
     def save_structure(self,event):
-        print("fuck")
         filename = filedialog.asksaveasfilename(defaultextension='.easynet',filetypes = [("Easynet files",".easynet")])
         print(filename)
+        summ=0
+        string1=""
+        for i in self.vector_tensor:
+            if i.state==1:
+                string1=string1+i.printo()
+                summ+=1
+        string1=str(summ)+"\n"+string1+"\n"
+        for i in self.vector_layer:
+            if i.state==1:
+                string1=string1+i.printo()
+        summ=0
+        geshu=0
+        listin=[]
+        for i in self.question_front.get():
+            if i==' ':
+                geshu+=1
+                listin.append(summ)
+                summ=0
+                continue
+            else :
+                summ=summ*10+int(i)
+                print(summ)
+        geshu+=1
+        listin.append(summ)
+        string2="input_node "+str(geshu)
+        for i in listin:
+            string2=string2+" "+str(i)
+        string2+="\n"
+        
+        summ=0
+        geshu=0
+        listout=[]
+        for i in self.question_end.get():
+            if i==' ':
+                geshu+=1
+                listout.append(summ)
+                summ=0
+                continue
+            else :
+                summ=summ*10+int(i)
+                print(summ)
+        geshu+=1
+        listout.append(summ)
+        string3="output_node "+str(geshu)
+        for i in listout:
+            string3=string3+" "+str(i)
+        string3+="\n"
+        string1=string1+string2+string3
         with open(filename,'w') as fl:
-            fl.write("我是你爹")
+            fl.write("Easynet Strcture File:\n")
+            fl.write(string1)

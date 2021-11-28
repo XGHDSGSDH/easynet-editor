@@ -1,19 +1,21 @@
 class tensor:
     def __init__(self,x,y,name,neweditor):
         self.state=1
+        self.color="#177CB0"
+        self.text_color="#FFFFFF"
         self.new_editor = neweditor
         self.radius=30#半径
         self.cmpx=x-self.new_editor.center_x#两个相对坐标
         self.cmpy=y-self.new_editor.center_y
         self.num=name#编号
-        self.circle=self.new_editor.rander_target.create_oval(x-self.radius,y-self.radius,x+self.radius,y+self.radius,fill="lavender")
-        self.text=self.new_editor.rander_target.create_text(x,y,text=name,font=("Consolas",16))
+        self.circle=self.new_editor.rander_target.create_oval(x-self.radius,y-self.radius,x+self.radius,y+self.radius,fill=self.color,width=0)
+        self.text=self.new_editor.rander_target.create_text(x,y,text=name,font=("Consolas",16),fill=self.text_color)
         self.inlayer=[]
         self.outlayer=[]
         #这里调用了别的类中的函数之后可以修改一下
     def draw_my_self(self):#重新画自己的圆和字
-        self.circle=self.new_editor.rander_target.create_oval(self.cmpx+self.new_editor.center_x-self.radius,self.cmpy+self.new_editor.center_y-self.radius,self.new_editor.center_x+self.cmpx+self.radius,self.cmpy+self.new_editor.center_y+self.radius,fill="lavender")
-        self.text=self.new_editor.rander_target.create_text(self.cmpx+self.new_editor.center_x,self.cmpy+self.new_editor.center_y,text=self.num,font=("Consolas",16))
+        self.circle=self.new_editor.rander_target.create_oval(self.cmpx+self.new_editor.center_x-self.radius,self.cmpy+self.new_editor.center_y-self.radius,self.new_editor.center_x+self.cmpx+self.radius,self.cmpy+self.new_editor.center_y+self.radius,fill=self.color,width=0)
+        self.text=self.new_editor.rander_target.create_text(self.cmpx+self.new_editor.center_x,self.cmpy+self.new_editor.center_y,text=self.num,font=("Consolas",16),fill=self.text_color)
 
     def in_my_area(self,click_x,click_y):#检测点击是否在自己范围内
         if (self.cmpx+self.new_editor.center_x-click_x)**2+(self.cmpy+self.new_editor.center_y-click_y)**2<=self.radius**2:
@@ -26,11 +28,14 @@ class tensor:
     def follow(self,x,y):
         self.cmpx=x-self.new_editor.center_x
         self.cmpy=y-self.new_editor.center_y
-        self.circle=self.new_editor.rander_target.create_oval(x-self.radius,y-self.radius,x+self.radius,y+self.radius,fill="lavender")
-        self.text=self.new_editor.rander_target.create_text(x,y,text=self.num,font=("Consolas",16))
+        self.circle=self.new_editor.rander_target.create_oval(x-self.radius,y-self.radius,x+self.radius,y+self.radius,fill=self.color,width=0)
+        self.text=self.new_editor.rander_target.create_text(x,y,text=self.num,font=("Consolas",16),fill=self.text_color)
         for i in self.inlayer:
             i.delete()
             i.draw_my_self()
         for i in self.outlayer:
             i.delete()
             i.draw_my_self()
+    def printo(self):
+        string1=str(self.num)+" "
+        return string1

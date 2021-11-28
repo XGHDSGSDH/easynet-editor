@@ -22,7 +22,13 @@ class layer_qw:
         self.button_for_quit=Button(self.question_window,text="确定")
         self.button_for_quit.grid(row=100,column=0)
         self.button_for_quit.bind("<ButtonRelease-1>",self.enter)
-        
+        self.question_window.bind("<Return>",self.enter)
+        self.question_window.protocol('WM_DELETE_WINDOW',self.special_close)
+    def special_close(self):
+        self.dad.new_editor.state=0
+        if self.first==1:
+            self.dad.state=0
+        self.question_window.destroy()
     def rebutton(self):
         self.question_window=Toplevel()
         self.question_window.title("layer information")
@@ -41,13 +47,14 @@ class layer_qw:
         self.button_for_quit=Button(self.question_window,text="确定")
         self.button_for_quit.grid(row=100,column=0)
         self.button_for_quit.bind("<ButtonRelease-1>",self.enter)
+        self.question_window.bind("<Return>",self.enter)
     def enter(self,event):
         try: 
             front = int(self.question_front.get())-1
             end = int(self.question_end.get())-1
         except ValueError:
-            print("Go fucking check the type of the vaule!")
-            tkinter.messagebox.showwarning(title="我是你爹",message="请勿乱写！")
+            print("Go check the type of the vaule!")
+            tkinter.messagebox.showwarning(title="提示",message="请勿乱写！")
             self.question_window.wm_attributes('-topmost',1)
             return
         if self.question_front.get()==self.question_end.get() or self.dad.new_editor.vector_tensor[front].state==0 or self.dad.new_editor.vector_tensor[end].state==0:
@@ -105,8 +112,8 @@ class dense_qw(layer_qw):
             inlen = int(self.question_inlen.get())
             outlen = int(self.question_outlen.get())
         except ValueError:
-            print("Go fucking check the type of the vaule!")
-            tkinter.messagebox.showwarning(title="我是你爹",message="请勿乱写！")
+            print("Go check the type of the vaule!")
+            tkinter.messagebox.showwarning(title="提示",message="请勿乱写！")
             self.question_window.wm_attributes('-topmost',1)
             return 
         self.dad.new_editor.vector_tensor[end].inlayer.append(self.dad)
@@ -137,8 +144,8 @@ class add_qw(layer_qw):
         try: 
             front2 = int(self.question_front2.get())-1
         except ValueError:
-            print("Go fucking check the type of the vaule!")
-            tkinter.messagebox.showwarning(title="我是你爹",message="请勿乱写！")
+            print("Go check the type of the vaule!")
+            tkinter.messagebox.showwarning(title="提示",message="请勿乱写！")
             self.question_window.wm_attributes('-topmost',1)
             return 
         self.dad.front2=front2+1
