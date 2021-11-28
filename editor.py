@@ -38,7 +38,7 @@ class editor:
                                                    values=['选择Layer', 'add', 'batch norm', 'conv', 'dense', 'dropout',
                                                            'fast_sig', 'fast_tan', 'flatten', 'hadamard', 'leaky_relu',
                                                            'relu'])
-        self.layer_combobox.current(3)
+        self.layer_combobox.current(0)
         self.layer_combobox.grid(row=0, column=1)
 
         # layer按钮
