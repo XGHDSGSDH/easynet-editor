@@ -29,6 +29,22 @@ class layer:
     def qwget(self):
         self.qw = layer_qw(self)
 
+    def draw_line(self, vector_tensor, arrow_side):
+        x1 = self.cmpx + self.new_editor.center_x
+        y1 = self.cmpy + self.new_editor.center_y
+        xs = vector_tensor.cmpx + self.new_editor.center_x
+        ys = vector_tensor.cmpy + self.new_editor.center_y
+        if (xs - x1) ** 2 + (ys - y1) ** 2 <= self.radius + vector_tensor.radius:
+            return 0
+        k = ((ys - y1) ** 2 + (xs - x1) ** 2) ** 0.5
+        return self.new_editor.rander_target.create_line(
+            (xs + (x1 - xs) / k * vector_tensor.radius,
+             ys + (y1 - ys) / k * vector_tensor.radius,
+             x1 - (x1 - xs) / k * self.radius,
+             y1 - (y1 - ys) / k * self.radius),
+            arrow=arrow_side,
+            width=4)
+
     def draw_my_self(self):  # 重新画自己的圆和字和箭头
         self.circle = self.new_editor.rander_target.create_oval(self.cmpx + self.new_editor.center_x - self.radius,
                                                                 self.cmpy + self.new_editor.center_y - self.radius,
@@ -38,8 +54,8 @@ class layer:
         self.text = self.new_editor.rander_target.create_text(self.cmpx + self.new_editor.center_x,
                                                               self.cmpy + self.new_editor.center_y, text=self.type,
                                                               font=("Consolas", 16), fill=layer.text_color)
-        self.arrow1 = draw_line1(self)
-        self.arrow2 = draw_line2(self)
+        self.arrow1 = self.draw_line(self.new_editor.vector_tensor[self.front-1],LAST)
+        self.arrow2 = self.draw_line(self.new_editor.vector_tensor[self.end-1],FIRST)
 
     def in_my_area(self, click_x, click_y):  # 检测点击是否在自己范围内
         if (self.cmpx + self.new_editor.center_x - click_x) ** 2 + (
@@ -111,9 +127,9 @@ class add(layer):
         self.text = self.new_editor.rander_target.create_text(self.cmpx + self.new_editor.center_x,
                                                               self.cmpy + self.new_editor.center_y, text=self.type,
                                                               font=("Consolas", 16), fill=layer.text_color)
-        self.arrow1 = draw_line1(self)
-        self.arrow2 = draw_line2(self)
-        self.arrow3 = draw_line3(self)
+        self.arrow1 = self.draw_line(self.new_editor.vector_tensor[self.front-1], LAST)
+        self.arrow2 = self.draw_line(self.new_editor.vector_tensor[self.end-1], FIRST)
+        self.arrow3 = self.draw_line(self.new_editor.vector_tensor[self.front2-1], LAST)
 
     def delete(self):
         self.new_editor.rander_target.delete(self.circle)
@@ -121,56 +137,3 @@ class add(layer):
         self.new_editor.rander_target.delete(self.arrow1)
         self.new_editor.rander_target.delete(self.arrow2)
         self.new_editor.rander_target.delete(self.arrow3)
-
-
-def draw_line1(layera):
-    # print("fuck")
-    x1 = layera.cmpx + layera.new_editor.center_x
-    y1 = layera.cmpy + layera.new_editor.center_y
-    xs = layera.new_editor.vector_tensor[layera.front - 1].cmpx + layera.new_editor.center_x
-    ys = layera.new_editor.vector_tensor[layera.front - 1].cmpy + layera.new_editor.center_y
-    if (xs - x1) ** 2 + (ys - y1) ** 2 <= layera.radius + layera.new_editor.vector_tensor[layera.front - 1].radius:
-        return 0
-    k = ((ys - y1) ** 2 + (xs - x1) ** 2) ** 0.5
-    return layera.new_editor.rander_target.create_line(
-        (xs + (x1 - xs) / k * layera.new_editor.vector_tensor[layera.front - 1].radius,
-         ys + (y1 - ys) / k * layera.new_editor.vector_tensor[layera.front - 1].radius,
-         x1 - (x1 - xs) / k * layera.radius,
-         y1 - (y1 - ys) / k * layera.radius),
-        arrow=LAST,
-        width=4)
-
-
-def draw_line2(layera):
-    x1 = layera.cmpx + layera.new_editor.center_x
-    y1 = layera.cmpy + layera.new_editor.center_y
-    xe = layera.new_editor.vector_tensor[layera.end - 1].cmpx + layera.new_editor.center_x
-    ye = layera.new_editor.vector_tensor[layera.end - 1].cmpy + layera.new_editor.center_y
-    if (xe - x1) ** 2 + (ye - y1) ** 2 <= layera.radius + layera.new_editor.vector_tensor[layera.end - 1].radius:
-        return 0
-    k = ((ye - y1) ** 2 + (xe - x1) ** 2) ** 0.5
-    return layera.new_editor.rander_target.create_line(
-        (xe + (x1 - xe) / k * layera.new_editor.vector_tensor[layera.end - 1].radius,
-         ye + (y1 - ye) / k * layera.new_editor.vector_tensor[layera.end - 1].radius,
-         x1 - (x1 - xe) / k * layera.radius,
-         y1 - (y1 - ye) / k * layera.radius),
-        arrow=FIRST,
-        width=4)
-
-
-def draw_line3(layera):
-    # print("fuck")
-    x1 = layera.cmpx + layera.new_editor.center_x
-    y1 = layera.cmpy + layera.new_editor.center_y
-    xs = layera.new_editor.vector_tensor[layera.front2 - 1].cmpx + layera.new_editor.center_x
-    ys = layera.new_editor.vector_tensor[layera.front2 - 1].cmpy + layera.new_editor.center_y
-    if (xs - x1) ** 2 + (ys - y1) ** 2 <= layera.radius + layera.new_editor.vector_tensor[layera.front2 - 1].radius:
-        return 0
-    k = ((ys - y1) ** 2 + (xs - x1) ** 2) ** 0.5
-    return layera.new_editor.rander_target.create_line(
-        (xs + (x1 - xs) / k * layera.new_editor.vector_tensor[layera.front2 - 1].radius,
-         ys + (y1 - ys) / k * layera.new_editor.vector_tensor[layera.front2 - 1].radius,
-         x1 - (x1 - xs) / k * layera.radius,
-         y1 - (y1 - ys) / k * layera.radius),
-        arrow=LAST,
-        width=4)
