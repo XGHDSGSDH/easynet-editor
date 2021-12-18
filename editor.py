@@ -35,9 +35,9 @@ class editor:
 
         # layer列表
         self.layer_combobox = tkinter.ttk.Combobox(self.window, width=35, height=30,
-                                                   values=['选择Layer', 'add', 'batch norm', 'conv', 'dense', 'dropout',
-                                                           'fast_sig', 'fast_tan', 'flatten', 'hadamard', 'leaky_relu',
-                                                           'relu'])
+                                                   values=["dense", "relu", "add", "选择Layer", "batch norm", "conv",
+                                                           "flatten", "leaky_relu", "hadamard", "dropout", "fast_tan",
+                                                           "fast_sig"])
         self.layer_combobox.current(0)
         self.layer_combobox.grid(row=0, column=1)
 
